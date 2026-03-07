@@ -1,555 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uttarayan</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uttarayan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, sans-serif;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+        body {
+            background: #f5f7fb;
+            color: #111827;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-<style>
+        /* LOGIN SCREEN */
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #F47C2A, #E23D28);
+            color: white;
+            position: fixed;
+            width: 100%;
+            z-index: 2000;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,sans-serif
-}
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            color: #111827;
+        }
 
-body{
-background:#f5f7fb;
-color:#111827;
-height:100vh
-}
+        .login-box input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
 
-/* LOGIN */
+        .login-box button {
+            margin-top: 16px;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: #F47C2A;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-#loginScreen{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-background:linear-gradient(135deg,#F47C2A,#E23D28);
-color:white
-}
+        /* APP LAYOUT */
+        #app {
+            display: none; /* Hidden until login */
+            height: 100vh;
+            width: 100%;
+        }
 
-.login-box{
-background:white;
-padding:40px;
-border-radius:16px;
-width:320px;
-text-align:center
-}
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #eee;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: all .35s ease;
+            height: 100vh;
+        }
 
-.login-box input{
-width:100%;
-padding:10px;
-margin-top:12px;
-border:1px solid #ddd;
-border-radius:8px
-}
+        .sidebar.hidden {
+            margin-left: -240px;
+        }
 
-.login-box button{
-margin-top:16px;
-padding:10px;
-width:100%;
-border:none;
-background:#F47C2A;
-color:white;
-border-radius:8px;
-cursor:pointer
-}
+        .sidebar-toggle {
+            position: fixed;
+            left: 240px;
+            top: 18px;
+            width: 28px;
+            height: 42px;
+            background: #F47C2A;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            z-index: 999;
+            transition: .3s;
+        }
 
-/* APP LAYOUT */
+        .sidebar.hidden + .sidebar-toggle {
+            left: 0;
+        }
 
-.app{
-display:none;
-height:100vh;
-display:flex
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
 
-/* SIDEBAR */
+        .logo img { width: 28px; }
 
-.sidebar{
-width:240px;
-background:#fff;
-border-right:1px solid #eee;
-padding:24px;
-display:flex;
-flex-direction:column;
-transition:all .35s ease
-}
+        .nav a {
+            display: block;
+            padding: 10px 0;
+            color: #555;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-.sidebar.hidden{
-margin-left:-240px
-}
+        .nav a:hover { color: #F47C2A; }
 
-.sidebar-toggle{
-position:fixed;
-left:240px;
-top:18px;
-width:28px;
-height:42px;
-background:#F47C2A;
-color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-border-radius:0 8px 8px 0;
-cursor:pointer;
-z-index:999;
-transition:.3s
-}
+        .progress {
+            margin-top: auto;
+            font-size: 13px;
+            color: #666;
+        }
 
-.sidebar.hidden + .sidebar-toggle{
-left:0
-}
+        .bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 10px;
+            margin-top: 6px;
+        }
 
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
-font-weight:600;
-font-size:20px;
-margin-bottom:30px
-}
+        .fill {
+            height: 6px;
+            width: 60%;
+            background: linear-gradient(to right, #F47C2A, #E23D28);
+            border-radius: 10px;
+        }
 
-.logo img{
-width:28px
-}
+        /* MAIN AREA */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-.nav a{
-display:block;
-padding:10px 0;
-color:#555;
-text-decoration:none;
-cursor:pointer
-}
+        .topbar {
+            background: #fff;
+            padding: 16px 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.nav a:hover{
-color:#F47C2A
-}
+        .content {
+            padding: 26px;
+            overflow-y: auto;
+            flex: 1;
+        }
 
-.progress{
-margin-top:auto;
-font-size:13px;
-color:#666
-}
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
 
-.bar{
-height:6px;
-background:#eee;
-border-radius:10px;
-margin-top:6px
-}
+        .card {
+            background: #fff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
 
-.fill{
-height:6px;
-width:60%;
-background:linear-gradient(to right,#F47C2A,#E23D28);
-border-radius:10px
-}
+        .card h4 { color: #777; font-size: 13px; }
+        .card p { font-size: 26px; font-weight: 600; margin-top: 6px; }
 
-/* MAIN AREA */
+        /* TRAJECTORY */
+        .trajectory {
+            margin-top: 30px;
+            background: #fff;
+            padding: 26px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+        }
 
-.main{
-flex:1;
-display:flex;
-flex-direction:column
-}
+        .path {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #666;
+            overflow-x: auto;
+            gap: 10px;
+        }
 
-.topbar{
-background:#fff;
-padding:16px 24px;
-border-bottom:1px solid #eee;
-display:flex;
-justify-content:space-between
-}
+        .line {
+            height: 4px;
+            background: #eee;
+            margin: 14px 0;
+            position: relative;
+            border-radius: 10px;
+        }
 
-.content{
-padding:26px;
-overflow:auto
-}
+        .line::after {
+            content: "";
+            position: absolute;
+            height: 4px;
+            width: 0;
+            background: linear-gradient(to right, #F47C2A, #E23D28);
+            border-radius: 10px;
+            animation: grow 2s forwards;
+        }
 
-/* CARDS */
+        @keyframes grow { to { width: 100%; } }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:18px;
-margin-top:20px
-}
+        .page { display: none; }
+        .active { display: block; }
 
-.card{
-background:#fff;
-padding:18px;
-border-radius:14px;
-box-shadow:0 8px 20px rgba(0,0,0,0.05)
-}
+        /* INTERVIEW COACH */
+        .interview-container {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.07);
+            margin-top: 24px;
+        }
 
-.card h4{
-color:#777;
-font-size:13px
-}
+        iframe { border-radius: 12px; width: 100%; height: 650px; border: none; }
 
-.card p{
-font-size:26px;
-font-weight:600;
-margin-top:6px
-}
+        /* FLOATING BUTTONS */
+        .ai-btn, .interview-btn {
+            position: fixed;
+            bottom: 24px;
+            background: linear-gradient(to right, #F47C2A, #E23D28);
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+            z-index: 1001;
+        }
 
-/* TRAJECTORY */
+        .ai-btn { right: 24px; }
+        .interview-btn { right: 170px; }
 
-.trajectory{
-margin-top:30px;
-background:#fff;
-padding:26px;
-border-radius:14px;
-text-align:center;
-box-shadow:0 6px 18px rgba(0,0,0,0.04)
-}
+        /* CHAT */
+        .chat {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            display: none;
+            flex-direction: column;
+            z-index: 1002;
+        }
 
-.path{
-display:flex;
-justify-content:space-between;
-margin-top:18px;
-font-size:13px;
-color:#666
-}
+        .chat-header {
+            background: linear-gradient(to right, #F47C2A, #E23D28);
+            color: white;
+            padding: 12px;
+            border-radius: 16px 16px 0 0;
+        }
 
-.line{
-height:4px;
-background:#eee;
-margin:14px 0;
-position:relative;
-border-radius:10px
-}
+        .chat-messages { height: 220px; overflow-y: auto; padding: 12px; }
+        .chat-input { display: flex; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; border: none; padding: 10px; outline: none; }
+        .chat-input button { border: none; background: #F47C2A; color: white; padding: 10px 14px; cursor: pointer; }
 
-.line::after{
-content:"";
-position:absolute;
-height:4px;
-width:0;
-background:linear-gradient(to right,#F47C2A,#E23D28);
-border-radius:10px;
-animation:grow 2s forwards
-}
-
-@keyframes grow{
-to{width:100%}
-}
-
-.page{
-display:none
-}
-
-.active{
-display:block
-}
-
-/* EMBED CONTAINER */
-
-.interview-container{
-background:white;
-padding:26px;
-border-radius:16px;
-box-shadow:0 10px 28px rgba(0,0,0,0.07);
-margin-top:24px
-}
-
-iframe{
-border-radius:12px
-}
-
-/* FLOAT BUTTONS */
-
-.ai-btn{
-position:fixed;
-bottom:24px;
-right:24px;
-background:linear-gradient(to right,#F47C2A,#E23D28);
-color:white;
-border:none;
-padding:14px 22px;
-border-radius:30px;
-cursor:pointer;
-box-shadow:0 10px 24px rgba(0,0,0,0.25)
-}
-
-.interview-btn{
-position:fixed;
-bottom:24px;
-right:170px;
-background:linear-gradient(to right,#F47C2A,#E23D28);
-color:white;
-border:none;
-padding:14px 22px;
-border-radius:30px;
-cursor:pointer;
-box-shadow:0 10px 24px rgba(0,0,0,0.25)
-}
-
-/* CHAT */
-
-.chat{
-position:fixed;
-bottom:90px;
-right:24px;
-width:320px;
-background:#fff;
-border-radius:16px;
-box-shadow:0 12px 30px rgba(0,0,0,0.25);
-display:none;
-flex-direction:column
-}
-
-.chat-header{
-background:linear-gradient(to right,#F47C2A,#E23D28);
-color:white;
-padding:12px;
-border-radius:16px 16px 0 0
-}
-
-.chat-messages{
-height:220px;
-overflow:auto;
-padding:12px
-}
-
-.chat-input{
-display:flex;
-border-top:1px solid #eee
-}
-
-.chat-input input{
-flex:1;
-border:none;
-padding:10px
-}
-
-.chat-input button{
-border:none;
-background:#F47C2A;
-color:white;
-padding:10px 14px;
-cursor:pointer
-}
-
-</style>
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 1500;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            }
+            .sidebar-toggle { left: 0; }
+            .sidebar:not(.hidden) + .sidebar-toggle { left: 240px; }
+            
+            .cards { grid-template-columns: 1fr; }
+            .interview-btn { right: auto; left: 24px; padding: 10px 15px; font-size: 12px; }
+            .ai-btn { padding: 10px 15px; font-size: 12px; }
+            
+            .chat { width: 90%; right: 5%; bottom: 80px; }
+            iframe { height: 500px; }
+            .path span { font-size: 10px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-
 <div id="loginScreen">
-<div class="login-box">
-<h2>Uttarayan</h2>
-<p>Navigate North</p>
-<input id="username" placeholder="Username">
-<input type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-</div>
-</div>
-
-<!-- APP -->
-
-<div class="app" id="app">
-
-<div class="sidebar">
-
-<div class="logo">
-<img src="https://img.icons8.com/ios-filled/50/000000/up.png"/>
-Uttarayan
+    <div class="login-box">
+        <h2>Uttarayan</h2>
+        <p>Navigate North</p>
+        <input id="username" placeholder="Username" type="text">
+        <input type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
 </div>
 
-<div class="nav">
-<a onclick="showPage('dashboard')">Career Map</a>
-<a onclick="showPage('resume')">Resume Studio</a>
-<a onclick="showPage('know')">Know Yourself</a>
-<a onclick="showPage('skills')">Skilling Lab</a>
-<a onclick="showPage('interview')">Interview Prep</a>
-<a onclick="showPage('interviewcoach')">Interview Coach</a>
-<a onclick="showPage('market')">Market Insights</a>
-<a onclick="showPage('salary')">Salary Survey</a>
-</div>
+<div id="app">
+    <div class="sidebar hidden">
+        <div class="logo">
+            <img src="https://img.icons8.com/ios-filled/50/000000/up.png" alt="logo"/>
+            Uttarayan
+        </div>
+        <div class="nav">
+            <a onclick="showPage('dashboard')">Career Map</a>
+            <a onclick="showPage('resume')">Resume Studio</a>
+            <a onclick="showPage('know')">Know Yourself</a>
+            <a onclick="showPage('skills')">Skilling Lab</a>
+            <a onclick="showPage('interview')">Interview Prep</a>
+            <a onclick="showPage('interviewcoach')">Interview Coach</a>
+            <a onclick="showPage('market')">Market Insights</a>
+            <a onclick="showPage('salary')">Salary Survey</a>
+        </div>
+        <div class="progress">
+            Northward Growth
+            <div class="bar"><div class="fill"></div></div>
+        </div>
+    </div>
 
-<div class="progress">
-Northward Growth
-<div class="bar"><div class="fill"></div></div>
-</div>
+    <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
 
-</div>
+    <div class="main">
+        <div class="topbar">
+            <div id="pageTitle">Dashboard</div>
+            <div id="userDisplay"></div>
+        </div>
 
-<div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="content">
+            <div id="dashboard" class="page active">
+                <h2>Your journey north continues.</h2>
+                <div class="cards">
+                    <div class="card"><h4>Career Readiness</h4><p>72%</p></div>
+                    <div class="card"><h4>Resume Score</h4><p>81%</p></div>
+                    <div class="card"><h4>Interview Readiness</h4><p>65%</p></div>
+                    <div class="card"><h4>Market Fit</h4><p>74%</p></div>
+                </div>
+                <div class="trajectory">
+                    <h3>Northward Growth Path</h3>
+                    <div class="line"></div>
+                    <div class="path">
+                        <span>Student</span><span>Skilled</span><span>Confident</span><span>Market Ready</span><span>Leadership</span>
+                    </div>
+                </div>
+            </div>
 
-<div class="main">
+            <div id="resume" class="page"><h2>Resume Studio</h2></div>
+            <div id="know" class="page"><h2>Know Yourself</h2></div>
+            <div id="skills" class="page"><h2>Skilling Lab</h2></div>
+            <div id="interview" class="page"><h2>Interview Preparation</h2></div>
+            <div id="market" class="page"><h2>Market Insights</h2></div>
+            <div id="salary" class="page"><h2>Salary Survey</h2></div>
 
-<div class="topbar">
-<div id="pageTitle">Dashboard</div>
-<div id="userDisplay"></div>
-</div>
+            <div id="interviewcoach" class="page">
+                <h2>AI Interview Coach</h2>
+                <p style="margin-top:6px;color:#6b7280">Practice answering interview questions and improve your communication skills with AI feedback.</p>
+                <div class="interview-container">
+                    <iframe src="https://speech-coach-ai--anjani9.replit.app/" allow="microphone"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="content">
+    <button class="ai-btn" onclick="toggleChat()">AI Coach</button>
+    <button class="interview-btn" onclick="showPage('interviewcoach')">Interview Coach</button>
 
-<div id="dashboard" class="page active">
-
-<h2>Your journey north continues.</h2>
-
-<div class="cards">
-
-<div class="card">
-<h4>Career Readiness</h4>
-<p>72%</p>
-</div>
-
-<div class="card">
-<h4>Resume Score</h4>
-<p>81%</p>
-</div>
-
-<div class="card">
-<h4>Interview Readiness</h4>
-<p>65%</p>
-</div>
-
-<div class="card">
-<h4>Market Fit</h4>
-<p>74%</p>
-</div>
-
-</div>
-
-<div class="trajectory">
-<h3>Northward Growth Path</h3>
-<div class="line"></div>
-
-<div class="path">
-<span>Student</span>
-<span>Skilled</span>
-<span>Confident</span>
-<span>Market Ready</span>
-<span>Leadership</span>
-</div>
-
-</div>
-
-</div>
-
-<div id="resume" class="page"><h2>Resume Studio</h2></div>
-<div id="know" class="page"><h2>Know Yourself</h2></div>
-<div id="skills" class="page"><h2>Skilling Lab</h2></div>
-<div id="interview" class="page"><h2>Interview Preparation</h2></div>
-<div id="market" class="page"><h2>Market Insights</h2></div>
-<div id="salary" class="page"><h2>Salary Survey</h2></div>
-
-<!-- INTERVIEW COACH -->
-
-<div id="interviewcoach" class="page">
-
-<h2>AI Interview Coach</h2>
-
-<p style="margin-top:6px;color:#6b7280">
-Practice answering interview questions and improve your communication skills with AI feedback.
-</p>
-
-<div class="interview-container">
-
-<iframe
-src="https://speech-coach-ai--anjani9.replit.app/"
-width="100%"
-height="650"
-allow="microphone"
-style="border:none">
-</iframe>
-
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-
-<!-- FLOATING BUTTONS -->
-
-<button class="ai-btn" onclick="toggleChat()">AI Coach</button>
-
-<button class="interview-btn" onclick="showPage('interviewcoach')">
-Interview Coach
-</button>
-
-<!-- CHAT -->
-
-<div class="chat" id="chat">
-
-<div class="chat-header">AI Coach</div>
-
-<div class="chat-messages" id="msgs">
-<div>Hello! I'm your AI Coach.</div>
-</div>
-
-<div class="chat-input">
-<input id="msgInput" placeholder="Ask your coach...">
-<button onclick="sendMsg()">Send</button>
-</div>
-
+    <div class="chat" id="chat">
+        <div class="chat-header">AI Coach</div>
+        <div class="chat-messages" id="msgs">
+            <div>Hello! I'm your AI Coach.</div>
+        </div>
+        <div class="chat-input">
+            <input id="msgInput" placeholder="Ask your coach...">
+            <button onclick="sendMsg()">Send</button>
+        </div>
+    </div>
 </div>
 
 <script>
+    function login() {
+        const name = document.getElementById("username").value || "User";
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("app").style.display = "flex";
+        document.getElementById("userDisplay").innerText = name;
+    }
 
-function login(){
-const name=document.getElementById("username").value||"User";
-document.getElementById("loginScreen").style.display="none";
-document.getElementById("app").style.display="flex";
-document.getElementById("userDisplay").innerText=name;
-}
+    function showPage(id) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        const targetPage = document.getElementById(id);
+        targetPage.classList.add("active");
+        document.getElementById("pageTitle").innerText = targetPage.querySelector("h2").innerText;
 
-function showPage(id){
+        // Auto-hide sidebar on mobile when navigating
+        if (window.innerWidth <= 768) {
+            document.querySelector(".sidebar").classList.add("hidden");
+        }
+    }
 
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    function toggleSidebar() {
+        document.querySelector(".sidebar").classList.toggle("hidden");
+    }
 
-document.getElementById(id).classList.add("active");
+    function toggleChat() {
+        const c = document.getElementById("chat");
+        c.style.display = (c.style.display === "flex") ? "none" : "flex";
+    }
 
-document.getElementById("pageTitle").innerText=
-document.getElementById(id).querySelector("h2").innerText;
-
-if(id==="interviewcoach"){
-document.querySelector(".sidebar").classList.add("hidden");
-}
-
-}
-
-function toggleSidebar(){
-document.querySelector(".sidebar").classList.toggle("hidden");
-}
-
-function toggleChat(){
-
-const c=document.getElementById("chat");
-
-c.style.display=c.style.display==="flex"?"none":"flex";
-
-}
-
-function sendMsg(){
-
-const input=document.getElementById("msgInput");
-
-if(!input.value.trim()) return;
-
-const msgs=document.getElementById("msgs");
-
-msgs.innerHTML+=`<div style="text-align:right;margin:6px 0">${input.value}</div>`;
-
-msgs.innerHTML+=`<div style="margin:6px 0">Focus on clarity, pacing and STAR structured answers.</div>`;
-
-input.value="";
-
-msgs.scrollTop=msgs.scrollHeight;
-
-}
-
+    function sendMsg() {
+        const input = document.getElementById("msgInput");
+        if (!input.value.trim()) return;
+        const msgs = document.getElementById("msgs");
+        msgs.innerHTML += `<div style="text-align:right;margin:6px 0;color:#F47C2A"><b>You:</b> ${input.value}</div>`;
+        msgs.innerHTML += `<div style="margin:6px 0"><b>Coach:</b> Focus on clarity, pacing, and STAR structured answers.</div>`;
+        input.value = "";
+        msgs.scrollTop = msgs.scrollHeight;
+    }
 </script>
 
 </body>
