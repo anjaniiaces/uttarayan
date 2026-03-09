@@ -143,7 +143,7 @@
             <a onclick="showPage('salary')">Salary Survey</a>
         </div>
         <div class="progress">
-            Northward Growth (72%)
+            Northward Growth (75%)
             <div class="bar"><div class="fill"></div></div>
         </div>
     </div>
@@ -209,7 +209,7 @@ Analyze Resume
 
             <div id="interviewcoach" class="page">
                 <h2>AI Interview Coach</h2>
-                <iframe src="speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net" width="100%" height="600" allow="microphone"></iframe>
+                <iframe src="https://speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net" width="100%" height="600" allow="microphone"></iframe>
             </div>
         </div>
     </div>
@@ -230,9 +230,19 @@ Analyze Resume
 </div>
 
 <script>
-    let chatHistory = [];
 
-    function login(){
+let chatHistory = [];
+
+let candidateScores = {
+
+resume: parseInt(document.querySelector(".cards").children[1].querySelector("p").innerText),
+
+interview: parseInt(document.querySelector(".cards").children[2].querySelector("p").innerText),
+
+communication: parseInt(document.querySelector(".cards").children[3].querySelector("p").innerText)
+
+}
+function login(){
         const name = document.getElementById("username").value || "Uttarayan";
         document.getElementById("loginScreen").style.display = "none";
         document.getElementById("app").style.display = "flex";
@@ -316,6 +326,34 @@ Analyze Resume
         msgs.scrollTop = msgs.scrollHeight;
     }
 
+function updateDashboard(){
+
+const resume=candidateScores.resume
+const interview=candidateScores.interview
+const comm=candidateScores.communication
+
+const career=Math.round((resume+interview+comm)/3)
+
+document.querySelector(".cards").children[0].querySelector("p").innerText=career+"%"
+document.querySelector(".cards").children[1].querySelector("p").innerText=resume+"%"
+document.querySelector(".cards").children[2].querySelector("p").innerText=interview+"%"
+document.querySelector(".cards").children[3].querySelector("p").innerText=comm+"%"
+
+document.querySelector(".fill").style.width=career+"%"
+document.querySelector(".progress").firstChild.nodeValue =
+"Northward Growth ("+career+"%)"
+
+}
+
+function updateInterviewScore(score){
+candidateScores.interview=score
+updateDashboard()
+}
+
+function updateCommunicationScore(score){
+candidateScores.communication=score
+updateDashboard()
+}
 function analyzeResume(){
 
 const file=document.getElementById("resumeFile").files[0]
@@ -325,16 +363,24 @@ alert("Upload resume first")
 return
 }
 
-document.getElementById("atsResult").innerHTML="Analyzing resume..."
-
 setTimeout(()=>{
 
 document.getElementById("atsResult").innerHTML=`
+
 <div class="card">
+
 <h4>ATS Score</h4>
+
 <p style="font-size:28px;font-weight:600">78%</p>
+
 <p>Your resume can be improved with more quantified achievements.</p>
-</div>`
+
+</div>
+
+`
+
+candidateScores.resume = 78
+updateDashboard()
 
 document.getElementById("resumeDownload").innerHTML=`
 <button onclick="downloadResume()" style="background:#F47C2A;color:white;border:none;padding:12px 20px;border-radius:8px;cursor:pointer">
