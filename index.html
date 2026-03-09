@@ -354,16 +354,32 @@ function updateCommunicationScore(score){
 candidateScores.communication=score
 updateDashboard()
 }
-function analyzeResume(){
+async function analyzeResume(){
 
-const file=document.getElementById("resumeFile").files[0]
+const file = document.getElementById("resumeFile").files[0]
+const jd = document.getElementById("jobDescription").value
 
 if(!file){
 alert("Upload resume first")
 return
 }
 
-setTimeout(()=>{
+document.getElementById("atsResult").innerHTML="Analyzing resume..."
+
+const resumeText = await file.text()
+
+try{
+
+const res = await fetch("https://speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net/api/resume/analyze",{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body: JSON.stringify({
+resumeText: resumeText,
+jobDescription: jd
+})
+})
+
+const data = await res.json()
 
 document.getElementById("atsResult").innerHTML=`
 
@@ -371,29 +387,47 @@ document.getElementById("atsResult").innerHTML=`
 
 <h4>ATS Score</h4>
 
-<p style="font-size:28px;font-weight:600">78%</p>
-
-<p>Your resume can be improved with more quantified achievements.</p>
+<p style="font-size:28px;font-weight:600">${data.score}%</p>
 
 </div>
 
 `
 
-candidateScores.resume = 78
+candidateScores.resume = data.score
 updateDashboard()
-
 document.getElementById("resumeDownload").innerHTML=`
 <button onclick="downloadResume()" style="background:#F47C2A;color:white;border:none;padding:12px 20px;border-radius:8px;cursor:pointer">
 Download Optimized Resume
-</button>`
+</button>
+`
+}catch(e){
 
-},1500)
+document.getElementById("atsResult").innerHTML="ATS analysis failed"
+
+}
 
 }
 
 function downloadResume(){
 window.open("https://speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net/api/resume/download")
 }
+window.addEventListener("message", function(event){
+
+if(!event.data) return
+
+if(event.data.type === "interviewScore"){
+
+updateInterviewScore(event.data.score)
+
+}
+
+if(event.data.type === "communicationScore"){
+
+updateCommunicationScore(event.data.score)
+
+}
+
+})
 
 </script>
 
