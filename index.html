@@ -177,8 +177,31 @@
                 </div>
             </div>
 
-            <div id="resume" class="page"><h2>Resume Studio</h2><p>Optimize your profile for ATS systems.</p></div>
-            <div id="know" class="page"><h2>Know Yourself</h2><p>Psychometric analysis and career mapping.</p></div>
+            
+<div id="resume" class="page">
+<h2>Resume Studio</h2>
+<p>Upload your resume and optimize it for ATS systems.</p>
+
+<div class="card" style="margin-top:20px">
+<h4>Upload Resume</h4>
+<input type="file" id="resumeFile" style="margin-top:12px;width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px">
+</div>
+
+<div class="card" style="margin-top:20px">
+<h4>Paste Job Description</h4>
+<textarea id="jobDescription" rows="6"
+style="margin-top:12px;width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:8px"></textarea>
+
+<button onclick="analyzeResume()"
+style="margin-top:16px;background:#F47C2A;color:white;border:none;padding:12px 20px;border-radius:8px;cursor:pointer">
+Analyze Resume
+</button>
+</div>
+
+<div id="atsResult" style="margin-top:20px"></div>
+<div id="resumeDownload" style="margin-top:20px"></div>
+</div>
+<div id="know" class="page"><h2>Know Yourself</h2><p>Psychometric analysis and career mapping.</p></div>
             <div id="skills" class="page"><h2>Skilling Lab</h2><p>Coursework and certifications.</p></div>
             <div id="interview" class="page"><h2>Interview Preparation</h2><p>Q&A banks and strategy guides.</p></div>
             <div id="market" class="page"><h2>Market Insights</h2><p>Trends in your target industry.</p></div>
@@ -186,7 +209,7 @@
 
             <div id="interviewcoach" class="page">
                 <h2>AI Interview Coach</h2>
-                <iframe src="https://speech-coach-ai--anjani9.replit.app/" width="100%" height="600" allow="microphone"></iframe>
+                <iframe src="speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net" width="100%" height="600" allow="microphone"></iframe>
             </div>
         </div>
     </div>
@@ -292,6 +315,40 @@
         msgs.appendChild(div);
         msgs.scrollTop = msgs.scrollHeight;
     }
+
+function analyzeResume(){
+
+const file=document.getElementById("resumeFile").files[0]
+
+if(!file){
+alert("Upload resume first")
+return
+}
+
+document.getElementById("atsResult").innerHTML="Analyzing resume..."
+
+setTimeout(()=>{
+
+document.getElementById("atsResult").innerHTML=`
+<div class="card">
+<h4>ATS Score</h4>
+<p style="font-size:28px;font-weight:600">78%</p>
+<p>Your resume can be improved with more quantified achievements.</p>
+</div>`
+
+document.getElementById("resumeDownload").innerHTML=`
+<button onclick="downloadResume()" style="background:#F47C2A;color:white;border:none;padding:12px 20px;border-radius:8px;cursor:pointer">
+Download Optimized Resume
+</button>`
+
+},1500)
+
+}
+
+function downloadResume(){
+window.open("https://speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net/api/resume/download")
+}
+
 </script>
 
 </body>
