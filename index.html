@@ -395,17 +395,20 @@ document.getElementById("atsResult").innerHTML =
 return
 }
 
-document.getElementById("atsResult").innerHTML=`
+document.getElementById("atsResult").innerHTML = `
+<h3>ATS Score: ${data.score}%</h3>
 
-<div class="card">
+<h4>Strengths</h4>
+<ul>
+${data.strengths.map(s => `<li>${s}</li>`).join("")}
+</ul>
 
-<h4>ATS Score</h4>
+<h4>Improvements Needed</h4>
+<ul>
+${data.weaknesses.map(w => `<li>${w}</li>`).join("")}
+</ul>
+`;
 
-<p style="font-size:28px;font-weight:600">${data.score}%</p>
-
-</div>
-
-`
 
 candidateScores.resume = data.score
 updateDashboard()
