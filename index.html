@@ -379,7 +379,16 @@ jobDescription: jd
 })
 })
 
-const data = await res.json()
+const text = await res.text()
+
+let data
+
+try {
+data = JSON.parse(text)
+} catch(e) {
+console.error("ATS response was not JSON:", text)
+throw new Error("ATS response invalid")
+}
 
 document.getElementById("atsResult").innerHTML=`
 
