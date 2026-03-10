@@ -411,10 +411,12 @@ Download Optimized Resume
 `
 }catch(e){
 
-document.getElementById("atsResult").innerHTML="ATS analysis failed"
+document.getElementById("atsResult").innerHTML = 
+"ATS analysis failed<br><pre>"+e+"</pre>"
+
+console.error("ATS ERROR:", e)
 
 }
-
 }
 
 function downloadResume(){
