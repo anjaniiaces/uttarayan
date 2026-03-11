@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uttarayan | Navigate North</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
+<!-- ADDED FOR PDF GENERATION -->
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
         body { background:#f5f7fb; color:#111827; height:100vh; overflow: hidden; }
 
@@ -184,7 +186,7 @@
 
 <div class="card" style="margin-top:20px">
 <h4>Upload Resume</h4>
-<input type="file" id="resumeFile" style="margin-top:12px;width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px">
+<input type="file" id="resumeFile" accept=".txt,.pdf,.doc,.docx" style="margin-top:12px;width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:8px">
 </div>
 
 <div class="card" style="margin-top:20px">
@@ -447,19 +449,30 @@ alert("Run ATS analysis first")
 return
 }
 
-const element = document.createElement("a")
-const file = new Blob([window.latestOptimizedResume], {type: "text/plain"})
+const { jsPDF } = window.jspdf
+const doc = new jsPDF()
 
-element.href = URL.createObjectURL(file)
-element.download = "ATS_Optimized_Resume.txt"
+doc.setFont("Times","Normal")
+doc.setFontSize(11)
 
-document.body.appendChild(element)
-element.click()
+let y = 20
+const margin = 15
 
-document.body.removeChild(element)
+const lines = doc.splitTextToSize(window.latestOptimizedResume,180)
 
+lines.forEach(line=>{
+doc.text(line,margin,y)
+y += 6
+
+if(y>280){
+doc.addPage()
+y = 20
 }
-window.addEventListener("message", function(event){
+})
+
+doc.save("ATS_Optimized_Resume.pdf")
+
+}window.addEventListener("message", function(event){
 
 if(!event.data) return
 
