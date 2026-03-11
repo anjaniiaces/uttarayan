@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <!-- ADDED FOR PDF GENERATION -->
 <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
 <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
         body { background:#f5f7fb; color:#111827; height:100vh; overflow: hidden; }
@@ -368,7 +370,27 @@ return
 
 document.getElementById("atsResult").innerHTML="Analyzing resume..."
 
-const resumeText = await file.text()
+let resumeText = ""
+
+if(file.name.endsWith(".txt")){
+resumeText = await file.text()
+}
+
+else if(file.name.endsWith(".docx")){
+
+const arrayBuffer = await file.arrayBuffer()
+
+const result = await mammoth.extractRawText({arrayBuffer})
+
+resumeText = result.value
+}
+
+else{
+
+alert("Please upload TXT or DOCX resume for now")
+
+return
+}
 
 try{
 
