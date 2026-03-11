@@ -441,7 +441,23 @@ console.error("ATS ERROR:", e)
 }
 
 function downloadResume(){
-window.open("https://speech-trainer-ai-deb7cme3fndmhufw.centralindia-01.azurewebsites.net/api/resume/download")
+
+if(!window.latestOptimizedResume){
+alert("Run ATS analysis first")
+return
+}
+
+const element = document.createElement("a")
+const file = new Blob([window.latestOptimizedResume], {type: "text/plain"})
+
+element.href = URL.createObjectURL(file)
+element.download = "ATS_Optimized_Resume.txt"
+
+document.body.appendChild(element)
+element.click()
+
+document.body.removeChild(element)
+
 }
 window.addEventListener("message", function(event){
 
