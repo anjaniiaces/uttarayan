@@ -396,19 +396,32 @@ return
 }
 
 document.getElementById("atsResult").innerHTML = `
-<h3>ATS Score: ${data.score}%</h3>
 
+<div class="cards" style="margin-top:20px">
+
+<div class="card">
+<h4>ATS Score</h4>
+<p style="font-size:42px;color:#F47C2A">${data.score}%</p>
+</div>
+
+<div class="card">
 <h4>Strengths</h4>
-<ul>
+<ul style="margin-top:10px;padding-left:18px">
 ${data.strengths.map(s => `<li>${s}</li>`).join("")}
 </ul>
+</div>
 
+<div class="card">
 <h4>Improvements Needed</h4>
-<ul>
+<ul style="margin-top:10px;padding-left:18px">
 ${data.weaknesses.map(w => `<li>${w}</li>`).join("")}
 </ul>
+</div>
+
+</div>
 `;
 
+window.latestOptimizedResume = data.optimizedResume;
 
 candidateScores.resume = data.score
 updateDashboard()
